@@ -60,19 +60,20 @@ int main() {
 
         if(starSystem) {
           sf::CircleShape starCircle(starSystem.createStarShape(x, y));
-          // Creating another circle shape to make spacing between the outline and a star
-          sf::CircleShape starCircleOutline(starCircle);
 
           if (mouseSector.x == x && mouseSector.y == y) {
+            // Creating another circle shape to make spacing between the outline and a star
+            sf::CircleShape starCircleOutline(starCircle);
             starCircleOutline.setFillColor(sf::Color::Transparent);
             starCircleOutline.setOutlineColor(sf::Color::Yellow);
             starCircleOutline.setOutlineThickness(1.f);
             starCircleOutline.setRadius(12.f);
             starCircleOutline.setOrigin(12.f, 12.f);
+
+            window.draw(starCircleOutline);
           }
 
           window.draw(starCircle);
-          window.draw(starCircleOutline);
         }
       }
     }
