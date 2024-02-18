@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "RandNumGenerator.hpp"
+#include <list>
 #include <stdint.h>
 #include <vector>
 
@@ -77,13 +77,57 @@ public:
     return star.exists;
   }
 
-  sf::CircleShape createStarShape(uint32_t x, uint32_t y) {
+  // Simply create drawable star
+  sf::CircleShape createStarShape(uint32_t x, uint32_t y) const {
     sf::CircleShape cs(star.radius);
     cs.setPosition(x * 16 + 8, y * 16 + 8);
     cs.setFillColor(sf::Color(star.color));
     cs.setOrigin(star.radius, star.radius);
 
     return cs;
+  }
+
+  // Create drawable of every body of the system for the star system window
+  std::list<sf::CircleShape> createSystemShapes(sf::Vector2f initAreaPos, sf::Vector2f initAreaSize) const {
+    std::list<sf::CircleShape> shapesList;
+    sf::Vector2f body{initAreaPos.x + initAreaSize.x * 0.1f, initAreaPos.y + initAreaSize.y * 0.5f};
+    float r = star.radius * 12.f;
+    body.x += r;
+
+    // The star
+    sf::CircleShape s(r);
+    s.setFillColor(sf::Color(star.color));
+    s.setPosition(body);
+    s.setOrigin(r, r);
+    shapesList.push_back(s);
+    body.x += r + 8.f;
+
+    // The planets
+    for (const Planet& planet : planets) {
+      body.x += planet.diameter;
+      sf::CircleShape p(planet.diameter);
+      p.setFillColor(sf::Color::Green);
+      p.setPosition(body);
+      p.setOrigin(planet.diameter, planet.diameter);
+      shapesList.push_back(p);
+
+      // The moons
+      sf::Vector2f moonBody = body;
+      moonBody.y += planet.diameter + 10.f;
+      for (const float& moon : planet.moons) {
+        moonBody.y += moon;
+        sf::CircleShape m(moon);
+        m.setFillColor(sf::Color(0x272727ff));
+        m.setPosition(moonBody);
+        m.setOrigin(moon, moon);
+        shapesList.push_back(m);
+        moonBody.y += moon + 10.f;
+      }
+
+      body.x += planet.diameter + 8.f;
+    }
+
+    return shapesList;
   }
 };
 

@@ -1,8 +1,8 @@
-#include "pch.h"
 #include "StarSystem.hpp"
 
 #define WIDTH 1200
 #define HEIGHT 720
+#define HEIGHT_3 (int)(HEIGHT / 3)
 
 int main() {
   sf::RenderWindow window;
@@ -76,6 +76,26 @@ int main() {
           window.draw(starCircle);
         }
       }
+    }
+
+      // Draw a star system window details
+    if (bStarSelected) {
+      static const sf::Vector2f initAreaPos{1.f, HEIGHT - HEIGHT_3 - 1.f};
+      static const sf::Vector2f initAreaSize{WIDTH - 2.f, HEIGHT_3};
+      StarSystem starSystem(vStarSelected.x, vStarSelected.y, true);
+
+      // Draw area
+      // Setting offset of 1 from every side to make the outline visible
+      sf::RectangleShape area(initAreaSize);
+      area.setPosition(initAreaPos);
+      area.setFillColor(sf::Color(0x101010ff));
+      area.setOutlineColor(sf::Color(0x505050ff));
+      area.setOutlineThickness(1.f);
+      window.draw(area);
+
+      // Draw the system bodies
+      for (const sf::CircleShape& c : starSystem.createSystemShapes(initAreaPos, initAreaSize))
+        window.draw(c);
     }
 
     window.display();
